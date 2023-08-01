@@ -87,7 +87,7 @@ function createCloseButton(){
     imgDiv.style.left = `90%`
     imgDiv.style.top = `10%`
     imgDiv.style.zIndex = "999999"
-    imgDiv.style.transform = "scale(0)"
+    imgDiv.style.transform = "scale(0) translate(-50%, -50%)"
 
     const img = new Image();
     img.src = "https://media-b.performoo.com/assets/af/img/icons/custom/close-btn.png";
