@@ -163,6 +163,7 @@ function plusClickHandler(id){
     const closeAnimation = gsap.to(closeButton, {
         duration: 1, // Duration of each breath cycle (in seconds)
         scale: 1,
+        translate: "-50%, -50%",
         ease: "elastic.out(1, 0.3)" // Easing function for smooth animation
     });
 
