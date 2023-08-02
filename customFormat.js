@@ -1,47 +1,48 @@
 (function (){
-   if(!window?.TC_YAAS){
-       window.TC_YAAS = {}
-   }
+    if(!window?.TC_YAAS){
+        window.TC_YAAS = {}
+    }
 
     if(!window?.TC_YAAS?.customFormat){
         window.TC_YAAS.customFormat = {}
     }
 
-   window.TC_YAAS.customFormat.setup = (config, slot)=>{
-       // let data = {
-       //     baseurl : "https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png",
-       //     expandable : [
-       //         {
-       //             url : "https://via.placeholder.com/200x400/32a852",
-       //             pos : [10,30]
-       //         },
-       //         {
-       //             url : "https://via.placeholder.com/200x400/9e3426",
-       //             pos : [40,50]
-       //         },
-       //         {
-       //             url : "https://via.placeholder.com/200x400/87503e",
-       //             pos : [20,30]
-       //         },
-       //         {
-       //             url : "https://via.placeholder.com/200x400/9e4426",
-       //             pos : [10,30]
-       //         },
-       //         {
-       //             url : "https://via.placeholder.com/200x400/32a852",
-       //             pos : [40,90]
-       //         }
-       //     ]
-       // }
-       createAdArea(config, slot)
-       loadJavaScript("https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js", afterScriptLoad)
-   }
+    window.TC_YAAS.customFormat.setup = (config, slot)=>{
+        // sample config
+        let data = {
+            baseurl : "https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png",
+            expandable : [
+                {
+                    url : "https://via.placeholder.com/200x400/32a852",
+                    pos : [10,30]
+                },
+                {
+                    url : "https://via.placeholder.com/200x400/9e3426",
+                    pos : [40,50]
+                },
+                {
+                    url : "https://via.placeholder.com/200x400/87503e",
+                    pos : [20,30]
+                },
+                {
+                    url : "https://via.placeholder.com/200x400/9e4426",
+                    pos : [10,30]
+                },
+                {
+                    url : "https://via.placeholder.com/200x400/32a852",
+                    pos : [40,90]
+                }
+            ]
+        }
+        createAdArea(config, slot)
+        loadJavaScript("https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js", afterScriptLoad)
+    }
 }())
 
 function afterScriptLoad(){
     gsap.to(".plus", {
         duration: 1, // Duration of each breath cycle (in seconds)
-        scale: 1.2, // Scale up by 20% (1.0 is normal size)
+        scale: 0.7, // Scale up by 20% (1.0 is normal size)
         opacity: 0.7, // Slightly reduce opacity during expansion
         repeat: -1, // Repeat indefinitely
         yoyo: true, // Play the animation in reverse after each cycle
@@ -64,12 +65,12 @@ function createAdArea(config, slot){
     container.style.position = "relative"
     container.style.overflow = "hidden"
     const imgDiv = createBaseImg(config.baseurl)
+    imgDiv.addEventListener("click", clickHandler(config?.cta))
     container.appendChild(imgDiv)
     container.appendChild(closeButton)
 
     expandable.forEach((item, index)=>{
-        const imgDiv = createImageDiv(item.url)
-        imgDiv.setAttribute("data-imgid", `expImg${index + 1}`)
+        const imgDiv = createImageDiv(item, `expImg${index + 1}`)
         const plus = createPlusIcon(`expImg${index + 1}`, item.pos)
 
         container.appendChild(imgDiv)
@@ -97,23 +98,32 @@ function createCloseButton(){
     return imgDiv;
 }
 
-function closeClickHandler(){
-    let closeButton = document.getElementById("tcCloseButton")
-    console.log("closeClicking,")
-    const closeAnimation = gsap.to(closeButton, {
-        duration: 0.5, // Duration of each breath cycle (in seconds)
-        scale: 0,
-        ease: "back.out(1.7)" // Easing function for smooth animation
-    });
-
-    gsap.to(".box", {
-        duration: 0.5, // Duration of each breath cycle (in seconds)
-        left: "100%", // Scale up by 20% (1.0 is normal size)
-        ease: "power1.inOut" // Easing function for smooth animation
-    });
-
-    closeAnimation.play()
+function clickHandler(cta = ""){
+    window.open(cta, "_blank")
 }
+
+function closeClickHandler() {
+    const imgDiv = document.querySelector(".tc_custom_box")
+    imgDiv.style.display = "block"
+    let closeButton = document.getElementById("tcCloseButton");
+    const img = document.querySelectorAll(`[data-imgid]`);
+
+    gsap.to(img, {
+        duration: 0.5,
+        left: "100%",
+        ease: "back.in(1.7)",
+        stagger: 0.07,
+        delay: 0, // Delay the start of the img element animation by 0.2 seconds
+    });
+
+    gsap.to(closeButton, {
+        duration: 0.5,
+        scale: 0,
+        ease: "back.in(1.7)",
+        delay: 0, // Delay the start of the closeButton animation by 0.2 seconds
+    });
+}
+
 
 function createPlusIcon(id, pos){
     const imgDiv = document.createElement("div");
@@ -137,7 +147,7 @@ function createPlusIcon(id, pos){
 
 function createBaseImg(url){
     const imgDiv = document.createElement("div");
-    imgDiv.style.cssText = "height: 100%; width: 100%; pointer-events : none;"
+    imgDiv.style.cssText = "height: 100%; width: 100%; pointer-events : auto;"
     imgDiv.classList.add("baseImg")
 
     const img = new Image();
@@ -151,43 +161,70 @@ function createBaseImg(url){
 }
 
 function plusClickHandler(id){
-    const img = document.querySelector(`[data-imgid=${id}]`);
+    const imgDiv = document.querySelector(".tc_custom_box")
+    imgDiv.style.display = "block"
+    const img = document.querySelectorAll(`[data-imgid=${id}]`);
     let closeButton = document.getElementById("tcCloseButton")
 
-    gsap.to(img, {
+    gsap.to(".plus", {
         duration: 0.3, // Duration of each breath cycle (in seconds)
+        scale: 0, // Scale up by 20% (1.0 is normal size)
+        ease: "back.out(1.7)", // Easing function for smooth animation,
+        stagger : 0.07
+    });
+
+    gsap.to(img, {
+        duration: 0.5, // Duration of each breath cycle (in seconds)
         left: "0%", // Scale up by 20% (1.0 is normal size)
-        ease: "power1.inOut" // Easing function for smooth animation
+        ease: "back.out(1.7)", // Easing function for smooth animation,
+        stagger : 0.07
     });
 
     const closeAnimation = gsap.to(closeButton, {
-        duration: 1, // Duration of each breath cycle (in seconds)
-        scale: 1,
-        translate: "-50%, -50%",
-        ease: "elastic.out(1, 0.3)" // Easing function for smooth animation
+        duration: 0.5, // Duration of each breath cycle (in seconds)
+        scale: 0.7,
+        x: "-50%", // Translate on the x-axis
+        y: "-50%", // Translate on the y-axis
+        ease: "elastic.out(1, 0.6)" // Easing function for smooth animation
     });
-
     closeAnimation.play()
 }
 
-function createImageDiv(url) {
+function createImageDiv(item, dataAttribute) {
+    const {url="", cta=""} = item
     const imgDiv = document.createElement("div");
-    imgDiv.classList.add("box")
-    imgDiv.style.cssText = "height: 100%; width: 100%; pointer-events : none";
-    imgDiv.style.position = "absolute"
-    imgDiv.style.left = "100%"
-    imgDiv.style.top = "0px"
+    imgDiv.classList.add("tc_custom_box");
+    imgDiv.style.cssText = "height: 100%; width: 100%; pointer-events: none; position: absolute; left: 0; top: 0; zIndex: 99999;";
     imgDiv.style.zIndex = "999"
-    imgDiv.style.objectFit = "cover"
 
     const img = new Image();
     img.src = url;
-    img.style.cssText = "height: 100%; width: 100%;";
+    img.style.cssText = "height: 100%; width: 100%; object-fit: cover; margin: 0; padding: 0;";
+    img.style.objectFit = "cover"
 
-    imgDiv.appendChild(img);
-    return imgDiv;
+    img.onload = function () {
+        const sliceHeight = imgDiv.clientHeight / 5; // Calculate the height of each slice
+        const rows = 5; // Number of rows
+
+        for (let y = 0; y < rows; y++) {
+            const sliceDiv = document.createElement('div');
+            sliceDiv.setAttribute("data-imgid", dataAttribute)
+            sliceDiv.style.width = "100%";
+            sliceDiv.style.position = "absolute";
+            sliceDiv.style.top = y * sliceHeight + "px";
+            sliceDiv.style.left = "100%"
+            sliceDiv.style.height = sliceHeight + "px";
+            sliceDiv.style.backgroundImage = `url(${url})`;
+            sliceDiv.style.backgroundPosition = `0px ${-y * sliceHeight}px`;
+            sliceDiv.style.backgroundSize = "auto";
+            sliceDiv.style.clip = `rect(${y * sliceHeight}px, 100%, ${(y + 1) * sliceHeight}px, 0)`;
+            sliceDiv.addEventListener("click", clickHandler(cta))
+            imgDiv.appendChild(sliceDiv);
+        }
+
+    };
+    return imgDiv
 }
-
 
 function loadJavaScript(url, callback) {
     const script = document.createElement('script');
