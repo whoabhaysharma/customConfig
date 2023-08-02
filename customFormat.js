@@ -8,32 +8,32 @@
     }
 
     window.TC_YAAS.customFormat.setup = (config, slot)=>{
-        // sample config
-        let data = {
-            baseurl : "https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png",
-            expandable : [
-                {
-                    url : "https://via.placeholder.com/200x400/32a852",
-                    pos : [10,30]
-                },
-                {
-                    url : "https://via.placeholder.com/200x400/9e3426",
-                    pos : [40,50]
-                },
-                {
-                    url : "https://via.placeholder.com/200x400/87503e",
-                    pos : [20,30]
-                },
-                {
-                    url : "https://via.placeholder.com/200x400/9e4426",
-                    pos : [10,30]
-                },
-                {
-                    url : "https://via.placeholder.com/200x400/32a852",
-                    pos : [40,90]
-                }
-            ]
-        }
+        // // sample config
+        // let data = {
+        //     baseurl : "https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png",
+        //     expandable : [
+        //         {
+        //             url : "https://via.placeholder.com/200x400/32a852",
+        //             pos : [10,30]
+        //         },
+        //         {
+        //             url : "https://via.placeholder.com/200x400/9e3426",
+        //             pos : [40,50]
+        //         },
+        //         {
+        //             url : "https://via.placeholder.com/200x400/87503e",
+        //             pos : [20,30]
+        //         },
+        //         {
+        //             url : "https://via.placeholder.com/200x400/9e4426",
+        //             pos : [10,30]
+        //         },
+        //         {
+        //             url : "https://via.placeholder.com/200x400/32a852",
+        //             pos : [40,90]
+        //         }
+        //     ]
+        // }
         createAdArea(config, slot)
         loadJavaScript("https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js", afterScriptLoad)
     }
@@ -65,7 +65,7 @@ function createAdArea(config, slot){
     container.style.position = "relative"
     container.style.overflow = "hidden"
     const imgDiv = createBaseImg(config.baseurl)
-    imgDiv.addEventListener("click", clickHandler(config?.cta))
+    imgDiv.addEventListener("click", ()=>clickHandler(config?.cta))
     container.appendChild(imgDiv)
     container.appendChild(closeButton)
 
@@ -218,7 +218,7 @@ function createImageDiv(item, dataAttribute) {
             sliceDiv.style.backgroundPosition = `0px ${-y * sliceHeight}px`;
             sliceDiv.style.backgroundSize = "auto";
             sliceDiv.style.clip = `rect(${y * sliceHeight}px, 100%, ${(y + 1) * sliceHeight}px, 0)`;
-            sliceDiv.addEventListener("click", clickHandler(cta))
+            sliceDiv.addEventListener("click", ()=>clickHandler(cta))
             imgDiv.appendChild(sliceDiv);
         }
 
